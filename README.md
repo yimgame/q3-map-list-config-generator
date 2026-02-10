@@ -171,14 +171,69 @@ type        "ffa team tourney"
 - **CA** - Clan Arena
 - **FT** - Freeze Tag
 - **RA** - Rocket Arena
+- **RA3** - Rocket Arena 3 (formato especial con arena field)
 
-## Tecnologías
+## 🧠 Sistema de Auto-Detección Inteligente
 
-- **Backend**: Python + Flask
-- **Frontend**: HTML5 + CSS3 + JavaScript
-- **Parser**: Expresiones regulares para archivos .arena
-- **ZIP**: Librería zipfile para leer .pk3
+El generador v2.0 utiliza un sistema de clasificación automática:
 
-## Autor
+### Reglas de Detección
+```python
+if "ctf" in mode_name:
+    → Usa caplimit (formato CTF)
+elif mode_name in ["duel", "1v1", "2v2", "tourney"]:
+    → Usa fraglimit (formato Duel)
+elif mode_name == "ra3":
+    → Usa roundlimit + arena field (formato RA3)
+else:
+    → Usa fraglimit (formato FFA por defecto)
+```
 
-Generado con GitHub Copilot
+### Ejemplos de Auto-Detección
+- Modo `"zombies"` → Detectado como FFA → `zombiesmaps.txt` con fraglimit
+- Modo `"megactf"` → Detectado como CTF → `megactfmaps.txt` con caplimit
+- Modo `"arena2024"` → Detectado como FFA → `arena2024maps.txt` con fraglimit
+
+## 🛠️ Tecnologías
+
+- **Backend**: Python 3.13 + Flask 3.1.2
+- **Frontend**: HTML5 + CSS3 + Vanilla JavaScript
+- **GUI**: PyWebView (EdgeWebView2)
+- **Parser**: Expresiones regulares + zipfile
+- **Build**: PyInstaller 6.18.0
+- **Auto-Detection Engine**: Sistema de clasificación dinámica
+
+## 📝 Changelog
+
+Ver [CHANGELOG.md](CHANGELOG.md) para el historial completo de versiones.
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar el generador:
+
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## ✨ Autor
+
+**Desarrollado con GitHub Copilot** (Claude Sonnet 4.5)  
+🤖 AI-Powered Development for the Quake 3 Community
+
+---
+
+<div align="center">
+
+**⚡ Q3 Map Config Generator v2.0 ⚡**
+
+*Making Quake 3 CPMA server configuration effortless since 2026*
+
+[⭐ Star en GitHub](https://github.com/yimgame/q3-map-list-config-generator) | [🐛 Reportar Bug](https://github.com/yimgame/q3-map-list-config-generator/issues) | [💡 Solicitar Feature](https://github.com/yimgame/q3-map-list-config-generator/issues)
+
+</div>
