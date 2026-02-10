@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q3 Map Config Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.3);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #ff6600;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 1.1em;
+        }
+
+        .scan-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #444;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ff8833 0%, #ffaa55 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #555;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .stat-card:hover {
+            border-color: #ff6600;
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .stat-label {
+            color: #999;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .map-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .type-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .type-card:hover {
+            border-color: #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
+        }
+
+        .type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px 15px 10px;
+            border-bottom: 2px solid #ff6600;
+            box-sizing: border-box;
+        }
+
+        .type-title {
+            font-size: 1.5em;
+            color: #ff6600;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .type-count {
+            background: #ff6600;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .params-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        label {
+            color: #bbb;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: all 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff6600;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .map-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+
+        .map-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .map-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .map-list::-webkit-scrollbar-thumb {
+            background: #ff6600;
+            border-radius: 5px;
+        }
+
+        .map-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid #ff6600;
+            box-sizing: border-box;
+        }
+
+        .map-name {
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .map-longname {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 3px;
+        }
+
+        .map-source {
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 3px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .actions button {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .preview {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #555;
+            box-sizing: border-box;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 102, 0, 0.3);
+            border-top: 4px solid #ff6600;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+            box-sizing: border-box;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .message.error {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .config-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #444;
+            width: 100%;
+            box-sizing: border-box;
+            max-height: 50px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .config-section.expanded {
+            max-height: 300px;
+        }
+
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .config-title {
+            color: #ff6600;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .config-toggle {
+            font-size: 1em;
+            transition: transform 0.3s;
+        }
+
+        .config-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .config-content {
+            display: none;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #555;
+        }
+
+        .config-content.open {
+            display: block;
+        }
+
+        .config-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .config-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .config-form label {
+            color: #bbb;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            line-height: 1;
+        }
+
+        .config-form input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            color: white;
+            padding: 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-family: 'Courier New', monospace;
+            line-height: 1;
+        }
+
+        .config-form input:focus {
+            outline: none;
+            border-color: #ff6600;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .config-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .config-buttons button {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 0.8em;
+            line-height: 1;
+        }
+
+        .config-buttons button.secondary {
+            background: linear-gradient(135deg, #555 0%, #666 100%);
+        }
+
+        .config-buttons button.secondary:hover {
+            background: linear-gradient(135deg, #666 0%, #777 100%);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 60px;
+            padding: 30px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 2px solid rgba(255, 102, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        footer p {
+            color: #999;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: #ff6600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        footer a:hover {
+            color: #ff8833;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+        }
+
+        .footer-signature {
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .footer-tech {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Q3 Map Config Generator ⚡</h1>
+            <p class="subtitle">Generador automático de configuraciones de mapas para Quake 3 Arena Challenge Pro Mode Arena</p>
+        </header>
+
+        <div class="config-section">
+            <div class="config-header" onclick="toggleConfigSection()">
+                <div class="config-title">
+                    <span class="config-toggle" id="configToggle">▼</span>
+                    ⚙️ Configuración de Rutas
+                </div>
+            </div>
+
+            <div class="config-content" id="configContent">
+                <div class="config-form">
+                    <div class="form-group">
+                        <label for="baseq3Input">Ruta de Mapas (baseq3)</label>
+                        <input type="text" id="baseq3Input" placeholder="G:\Games\Quake3\baseq3">
+                    </div>
+                    <div class="form-group">
+                        <label for="outputInput">Ruta de Salida (cfg-maps)</label>
+                        <input type="text" id="outputInput" placeholder="G:\Games\Quake3\cpma\cfg-maps">
+                    </div>
+                </div>
+                <div class="config-buttons">
+                    <button class="secondary" onclick="resetConfig()">↻ Valores por Defecto</button>
+                    <button onclick="saveConfig()">💾 Guardar Configuración</button>
+                </div>
+                <div id="configMessage" class="message"></div>
+            </div>
+        </div>
+
+        <div class="scan-section">
+            <button id="scanBtn" onclick="scanMaps()">🔍 Escanear Archivos .pk3</button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Escaneando archivos .pk3...</p>
+            </div>
+
+            <div class="stats" id="stats" style="display: none;"></div>
+        </div>
+
+        <div class="map-types" id="mapTypes"></div>
+
+        <footer>
+            <p>Q3 Map Config Generator - Sistema Dinámico v2.0</p>
+            <p>Desarrollado para la comunidad de <strong>Quake 3 CPMA</strong></p>
+            <p class="footer-signature">🤖 Crafted with AI by GitHub Copilot (Claude Sonnet 4.5)</p>
+            <p class="footer-tech">Python • Flask • PyWebView • Auto-Detection Engine</p>
+            <p><a href="https://github.com/yimgame/q3-map-list-config-generator" target="_blank">⭐ GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let mapsData = {};
+
+        // Cargar configuración al abrir la página
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('baseq3Input').value = data.baseq3_path;
+                    document.getElementById('outputInput').value = data.output_path;
+                }
+            } catch (error) {
+                console.error('Error al cargar configuración:', error);
+            }
+        }
+
+        function toggleConfigSection() {
+            const content = document.getElementById('configContent');
+            const toggle = document.getElementById('configToggle');
+            const section = document.querySelector('.config-section');
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+            section.classList.toggle('expanded');
+        }
+
+        function resetConfig() {
+            document.getElementById('baseq3Input').value = 'G:\\Games\\Quake3\\baseq3';
+            document.getElementById('outputInput').value = 'G:\\Games\\Quake3\\cpma\\cfg-maps';
+            showConfigMessage('Valores restaurados a los predeterminados', 'success');
+        }
+
+        async function saveConfig() {
+            const baseq3Path = document.getElementById('baseq3Input').value;
+            const outputPath = document.getElementById('outputInput').value;
+            const message = document.getElementById('configMessage');
+
+            if (!baseq3Path || !outputPath) {
+                showConfigMessage('❌ Por favor completa todas las rutas', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        baseq3_path: baseq3Path,
+                        output_path: outputPath
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showConfigMessage('✅ ' + data.message, 'success');
+                    setTimeout(() => { message.style.display = 'none'; }, 3000);
+                } else {
+                    showConfigMessage('❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                showConfigMessage('❌ Error al guardar: ' + error, 'error');
+            }
+        }
+
+        function showConfigMessage(text, type) {
+            const message = document.getElementById('configMessage');
+            message.className = 'message ' + type;
+            message.textContent = text;
+            message.style.display = 'block';
+        }
+
+
+        async function scanMaps() {
+            const btn = document.getElementById('scanBtn');
+            const loading = document.getElementById('loading');
+            const stats = document.getElementById('stats');
+            const mapTypes = document.getElementById('mapTypes');
+
+            btn.disabled = true;
+            loading.classList.add('active');
+            stats.style.display = 'none';
+            mapTypes.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/scan');
+                const data = await response.json();
+
+                if (data.success) {
+                    mapsData = data.maps_by_type;
+                    displayStats(data);
+                    displayMapTypes(data.maps_by_type, data.counts);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al escanear: ' + error);
+            } finally {
+                btn.disabled = false;
+                loading.classList.remove('active');
+            }
+        }
+
+        function displayStats(data) {
+            const stats = document.getElementById('stats');
+            
+            // Labels conocidos para mejor presentación
+            const knownLabels = {
+                'ffa': 'FFA',
+                'ctf': 'CTF',
+                'tourney': 'Tourney',
+                '1v1': '1v1',
+                'tdm': 'TDM',
+                'team': 'Team',
+                'ca': 'Clan Arena',
+                'ft': 'Freeze Tag',
+                'ctfs': 'CTFS',
+                'ra': 'RA',
+                'ra3': 'RA3',
+                'hm': 'HoonyMode',
+                'da': 'Duel Arena',
+                'ntf': 'NTF',
+                '2v2': '2v2',
+                'ftag': 'Flag Tag'
+            };
+            
+            // Generar stats dinámicamente: total + todos los tipos encontrados
+            const statCards = [];
+            
+            // Card de total siempre primero
+            statCards.push(`
+                <div class="stat-card">
+                    <div class="stat-number">${data.total_maps}</div>
+                    <div class="stat-label">Totales</div>
+                </div>
+            `);
+            
+            // Cards dinámicos para cada tipo encontrado (ordenados alfabéticamente)
+            Object.keys(data.counts)
+                .sort()
+                .forEach(typeKey => {
+                    const count = data.counts[typeKey] || 0;
+                    if (count > 0) {
+                        const label = knownLabels[typeKey] || typeKey.toUpperCase();
+                        statCards.push(`
+                            <div class="stat-card">
+                                <div class="stat-number">${count}</div>
+                                <div class="stat-label">${label}</div>
+                            </div>
+                        `);
+                    }
+                });
+            
+            stats.innerHTML = statCards.join('');
+            stats.style.display = 'grid';
+        }
+
+        function displayMapTypes(mapsByType, counts) {
+            const container = document.getElementById('mapTypes');
+            
+            // Configuraciones conocidas
+            const typeConfigs = {
+                'ffa': { minplayers: '00', maxplayers: '04', fraglimit: '25', timelimit: '20', label: 'FFA - Free For All' },
+                'ctf': { minplayers: '02', maxplayers: '12', caplimit: '05', timelimit: '05', label: 'CTF - Capture The Flag' },
+                'ctfs': { minplayers: '02', maxplayers: '12', caplimit: '05', timelimit: '05', label: 'CTFS - CTF Strawberry' },
+                'tourney': { minplayers: '00', maxplayers: '02', fraglimit: '20', timelimit: '10', label: 'Tourney - 1v1 Duel' },
+                '1v1': { minplayers: '00', maxplayers: '02', fraglimit: '20', timelimit: '10', label: '1v1 - Duel' },
+                'team': { minplayers: '02', maxplayers: '16', fraglimit: '30', timelimit: '20', label: 'Team' },
+                'tdm': { minplayers: '02', maxplayers: '16', fraglimit: '30', timelimit: '20', label: 'TDM - Team Deathmatch' },
+                'ra': { minplayers: '02', maxplayers: '08', fraglimit: '25', timelimit: '15', label: 'RA - Rocket Arena' },
+                'ra3': { minplayers: '00', maxplayers: '99', roundlimit: '00', timelimit: '20', arena: '4', label: 'RA3 - Rocket Arena 3' },
+                'ca': { minplayers: '02', maxplayers: '16', fraglimit: '10', timelimit: '15', label: 'CA - Clan Arena' },
+                'ft': { minplayers: '02', maxplayers: '16', fraglimit: '15', timelimit: '15', label: 'FT - Freeze Tag' },
+                'hm': { minplayers: '00', maxplayers: '04', fraglimit: '25', timelimit: '20', label: 'HM - HoonyMode' },
+                'da': { minplayers: '00', maxplayers: '02', fraglimit: '20', timelimit: '10', label: 'DA - Duel Arena' },
+                'ntf': { minplayers: '02', maxplayers: '12', caplimit: '05', timelimit: '05', label: 'NTF - No Team Flags' },
+                '2v2': { minplayers: '02', maxplayers: '04', fraglimit: '20', timelimit: '15', label: '2v2 - Two vs Two' },
+                'ftag': { minplayers: '02', maxplayers: '16', fraglimit: '30', timelimit: '20', label: 'FTAG - Flag Tag' }
+            };
+
+            // Función para generar configuración automática para modos desconocidos
+            function getDefaultConfigForType(type) {
+                // Detectar si parece CTF (contiene 'ctf' en el nombre)
+                if (type.includes('ctf')) {
+                    return { 
+                        minplayers: '02', 
+                        maxplayers: '12', 
+                        caplimit: '05', 
+                        timelimit: '05', 
+                        label: type.toUpperCase() + ' (Auto-detected CTF)'
+                    };
+                }
+                
+                // Detectar si parece duel (contiene 'duel', '1v1', '2v2', 'tourney')
+                if (type.includes('duel') || type.includes('1v1') || type.includes('2v2') || type.includes('tourney')) {
+                    return { 
+                        minplayers: '00', 
+                        maxplayers: '04', 
+                        fraglimit: '20', 
+                        timelimit: '15', 
+                        label: type.toUpperCase() + ' (Auto-detected Duel)'
+                    };
+                }
+                
+                // Default: FFA-style (fraglimit)
+                return { 
+                    minplayers: '00', 
+                    maxplayers: '04', 
+                    fraglimit: '25', 
+                    timelimit: '20', 
+                    label: type.toUpperCase() + ' (Auto-detected)'
+                };
+            }
+
+            for (const [type, maps] of Object.entries(mapsByType)) {
+                if (maps.length === 0) continue;
+
+                const config = typeConfigs[type] || getDefaultConfigForType(type);
+                const card = createTypeCard(type, maps, config, counts[type]);
+                container.appendChild(card);
+            }
+        }
+
+        function createTypeCard(type, maps, defaultConfig, count) {
+            const card = document.createElement('div');
+            card.className = 'type-card';
+
+            const isRA3 = type === 'ra3';
+            const isCTF = type === 'ctf' || type === 'ctfs' || type === 'ntf';
+            const limitLabel = isRA3 ? 'Roundlimit' : (isCTF ? 'Caplimit' : 'Fraglimit');
+            const limitField = isRA3 ? 'roundlimit' : (isCTF ? 'caplimit' : 'fraglimit');
+            const displayLabel = defaultConfig.label || type.toUpperCase();
+
+            let extraFields = '';
+            if (isRA3) {
+                extraFields = `
+                    <div class="form-group">
+                        <label>Arena</label>
+                        <input type="text" id="${type}_arena" value="${defaultConfig.arena || '4'}">
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="type-header">
+                    <div class="type-title">${displayLabel}</div>
+                    <div class="type-count">${count} mapas</div>
+                </div>
+
+                <div class="params-form">
+                    <div class="form-group">
+                        <label>Min Players</label>
+                        <input type="text" id="${type}_minplayers" value="${defaultConfig.minplayers || '00'}">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Players</label>
+                        <input type="text" id="${type}_maxplayers" value="${defaultConfig.maxplayers || '04'}">
+                    </div>
+                    <div class="form-group">
+                        <label>${limitLabel}</label>
+                        <input type="text" id="${type}_${limitField}" value="${defaultConfig[limitField] || '25'}">
+                    </div>
+                    <div class="form-group">
+                        <label>Timelimit</label>
+                        <input type="text" id="${type}_timelimit" value="${defaultConfig.timelimit || '20'}">
+                    </div>
+                    ${extraFields}
+                </div>
+
+                <div class="actions">
+                    <button onclick="previewConfig('${type}')">👁️ Previsualizar</button>
+                    <button onclick="generateConfig('${type}')">💾 Generar Archivo</button>
+                </div>
+
+                <div id="${type}_preview" class="preview hidden"></div>
+                <div id="${type}_message" class="message"></div>
+
+                <div class="map-list">
+                    ${maps.map(m => `
+                        <div class="map-item">
+                            <div class="map-name">${m.map}</div>
+                            ${m.longname ? `<div class="map-longname">${m.longname}</div>` : ''}
+                            <div class="map-source">📦 ${m.source_pk3}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function getParams(type) {
+            const isRA3 = type === 'ra3';
+            const isCTF = type === 'ctf' || type === 'ctfs' || type === 'ntf';
+            const limitField = isRA3 ? 'roundlimit' : (isCTF ? 'caplimit' : 'fraglimit');
+
+            const params = {
+                minplayers: document.getElementById(`${type}_minplayers`).value,
+                maxplayers: document.getElementById(`${type}_maxplayers`).value,
+                [limitField]: document.getElementById(`${type}_${limitField}`).value,
+                timelimit: document.getElementById(`${type}_timelimit`).value
+            };
+
+            if (isRA3) {
+                params.arena = document.getElementById(`${type}_arena`).value;
+            }
+
+            return params;
+        }
+
+        async function previewConfig(type) {
+            const params = getParams(type);
+            const preview = document.getElementById(`${type}_preview`);
+
+            try {
+                const response = await fetch('/api/preview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, params })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    preview.textContent = data.content;
+                    preview.classList.remove('hidden');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al previsualizar: ' + error);
+            }
+        }
+
+        async function generateConfig(type) {
+            const params = getParams(type);
+            const message = document.getElementById(`${type}_message`);
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, params })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    message.className = 'message success';
+                    message.textContent = `✅ Archivo generado: ${data.filename} (${data.maps_count} mapas)`;
+                    message.style.display = 'block';
+                    setTimeout(() => { message.style.display = 'none'; }, 5000);
+                } else {
+                    message.className = 'message error';
+                    message.textContent = `❌ Error: ${data.error}`;
+                    message.style.display = 'block';
+                }
+            } catch (error) {
+                message.className = 'message error';
+                message.textContent = `❌ Error: ${error}`;
+                message.style.display = 'block';
+            }
+        }
+
+        // Cargar configuración cuando se abre la página
+        window.addEventListener('load', loadConfig);
+    </script>
+</body>
+</html>

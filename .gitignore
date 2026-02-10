@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist-info/
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+q3cg/
+
+# PyInstaller
+build/
+dist/
+*.spec.bak
+
+# Application specific
+*.dat
+pk3cache.dat
+servercache.dat
+
+# Config files (user-specific)
+config.json
+
+# Executables
+*.exe
+!dist/*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Documentation backup
+*.md.bak
