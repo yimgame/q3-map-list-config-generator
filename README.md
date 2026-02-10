@@ -1,4 +1,4 @@
-# ⚡ Q3 Map Config Generator v2.0
+# ⚡ Q3 Map List Config Generator v2.0
 
 > **Sistema Dinámico de Generación Automática** de archivos de configuración de mapas para Quake 3 Arena CPMA
 
