@@ -1,19 +1,32 @@
-# ⚡ Q3 CPMA NCQ3 Map List Config Generator v2.1
+<div align="center">
 
-> **Sistema Dinámico de Generación Automática** de archivos de configuración de mapas para Quake 3 Arena CPMA
+<h1>⚡ Q3 CPMA NCQ3 Map List Config Generator v2.1</h1>
 
->_ 🌐 Sitio oficial de CPMA: https://playmorepromode.com/
+**Sistema Dinámico de Generación Automática** de archivos de configuración de mapas para Quake 3 Arena CPMA
 
->_ 🌐 Maked with love by https://yimgame.github.io/
+🌐 Sitio oficial de CPMA: https://playmorepromode.com/
 
+🌐 Maked with love by https://yimgame.github.io/
+
+<p>
+ 
 <img width="714" height="749" alt="q3_cpma_map_list_config_generator" src="https://github.com/user-attachments/assets/1b9cdca6-88b1-4f9c-9fd6-c544e8b6af72" />
 
+</p>
 
+
+ [![GitHub Copilot](https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white)](https://github.com/copilot/)
+
+
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=flat&logo=discord&logoColor=white)](https://img.shields.io/discord/452879575236476949/)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.1.2-green.svg)](https://flask.palletsprojects.com/)
+[![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg)](https://html.spec.whatwg.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Características Principales
+</div>
+
+<h2 align="center">🚀 Q3 CPMA NCQ3 Map List Config Generator v2.1</h2>
 
 ### ✨ Versión 2.1 - Sistema Dinámico
 - 🤖 **Auto-detección de modos de juego**: Detecta automáticamente modos nuevos sin configuración manual
